@@ -35,12 +35,17 @@ func main() {
     for _, file := range files {
         var message map[string]interface{}
         if strings.HasSuffix(file.Name(), ".json") {
-            json.Unmarshal([]byte(file.Name()), &message)
+            jfile, err := ioutil.ReadFile(*message_dir + "/" + file.Name())
+            failOnError(err, "Can't read file")
+            fmt.Printf("Using json file: %s\n", file.Name())
+            json.Unmarshal(jfile, &message)
+            fmt.Printf("Unmarshalled: %s\n", message)
             json_messages = append(json_messages, message)
         }
     }
 
     for total_sent < *total_messages {
+        fmt.Printf("Preparing to send %d more messages\n", *total_messages-total_sent)
         var messages []map[string]interface{}
         for i := 0; i < *messages_per_interval; i++ {
             messages = append(messages, json_messages[rand.Intn(len(json_messages))])
