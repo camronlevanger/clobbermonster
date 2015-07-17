@@ -28,9 +28,15 @@ You can clone this repository and use it in a development capacity as you would 
 
 So, for example, the following:
 
-`clobbermonster -u amqp://guest:guest@localhost:5672/ -n test_clobbermonster -t 5000 -m 20 -i 1 -f /home/user/my-json-files`
+`clobbermonster -p amqp -u amqp://guest:guest@localhost:5672/ -n test_clobbermonster -t 5000 -m 20 -i 1 -f /home/user/my-json-files`
 
 will connect to an AMQP server on `localhost`, and then proceed to send `20` randomly selected messages from the directory `/home/user/my-json-files` (any number of files ending in .json) every `1` second to a queue named `test_clobbermonster` until `5000` messages have been sent.
+
+And,
+
+`clobbermonster -p stomp -s localhost:61613 -U guest -P guest -T /topic/test_topic -n test_clobbermonster -t 5000 -m 20 -i 1 -f /home/user/my-json-files`
+
+does the same thing, but over STOMP instead of AMQP.
 
 ## Also
 

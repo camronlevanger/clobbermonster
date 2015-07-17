@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"github.com/golang/glog"
 	"github.com/streadway/amqp"
+	"gopkg.in/stomp.v1"
 )
 
-func Publish(messages []map[string]interface{}, connection string, queue string) {
+// Send the messages via AMQP protocol
+func PublishAMQP(messages []map[string]interface{}, connection string, queue string) {
 
 	var err error
 
@@ -50,5 +52,39 @@ func Publish(messages []map[string]interface{}, connection string, queue string)
 			failOnError(err, "Unable to publish, shutting down...")
 		}
 	}
+
+}
+
+// Send the messages via STOMP protocol
+func PublishSTOMP(messages []map[string]interface{}, connection string, user string, pass string, queue string, topic string) {
+
+	conn, err := stomp.Dial("tcp", connection, stomp.Options{
+		Login:    user,
+		Passcode: pass,
+		Host:     "/",
+	})
+	if err != nil {
+		glog.Errorf("Unable to connect to STOMP server: %s\n", err)
+		return
+	}
+
+	for _, message := range messages {
+
+		encoded_message, _ := json.Marshal(message)
+
+		err = conn.Send(
+			topic,
+			"text/plain",
+			encoded_message,
+			nil,
+		)
+		if err != nil {
+			glog.Errorf("Error sending STOMP message: %s : %s\n", err, encoded_message)
+			conn.Disconnect()
+			return
+		}
+	}
+
+	conn.Disconnect()
 
 }
