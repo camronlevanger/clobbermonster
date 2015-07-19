@@ -15,6 +15,11 @@ You can clone this repository and use it in a development capacity as you would 
 -n="queue": The name of the persistent queue
 -t=100000: The total number of messages to send to the queue
 -u="amqp://guest:guest@localhost:5672/": AMQP Connection String
+-P="guest": STOMP password
+-T="test": STOMP topic (/topic/your_topic)
+-U="guest": STOMP username
+-p="amqp": use amqp or stomp protocol
+-s="localhost": STOMP host
 ```
 ```
 -v=0: log level for V logs
